@@ -24,7 +24,11 @@ interface MenuItem {
 export default function Admin() {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  const ADMIN_EMAIL = 'admin@pizzatime.ru';
+  const ADMIN_PASSWORD = 'admin123';
   const [menuItems, setMenuItems] = useState<MenuItem[]>([
     {
       id: 1,
@@ -63,7 +67,7 @@ export default function Admin() {
   });
 
   const handleLogin = () => {
-    if (password === 'admin123') {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       toast({
         title: 'Вход выполнен',
@@ -71,8 +75,8 @@ export default function Admin() {
       });
     } else {
       toast({
-        title: 'Ошибка',
-        description: 'Неверный пароль',
+        title: 'Ошибка входа',
+        description: 'Неверный email или пароль',
         variant: 'destructive'
       });
     }
@@ -174,10 +178,20 @@ export default function Admin() {
           <div className="text-center mb-6">
             <div className="text-5xl mb-4">🔐</div>
             <h1 className="text-2xl font-bold">Админ-панель</h1>
-            <p className="text-muted-foreground">Введите пароль для входа</p>
+            <p className="text-muted-foreground">Доступ только для admin@pizzatime.ru</p>
           </div>
 
           <div className="space-y-4">
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="admin@pizzatime.ru"
+              />
+            </div>
             <div>
               <Label htmlFor="password">Пароль</Label>
               <Input
