@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
+import SnowEffect from '@/components/SnowEffect';
+import { useNavigate } from 'react-router-dom';
 
 interface MenuItem {
   id: number;
@@ -25,12 +27,27 @@ interface CartItem extends MenuItem {
 }
 
 const Index = () => {
+  const navigate = useNavigate();
   const [cart, setCart] = useState<CartItem[]>([]);
   const [bonusPoints, setBonusPoints] = useState(450);
   const [useBonuses, setUseBonuses] = useState(false);
   const [pizzaBuilderOpen, setPizzaBuilderOpen] = useState(false);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>(['Сыр моцарелла', 'Томатный соус']);
   const [pizzaSize, setPizzaSize] = useState<'small' | 'medium' | 'large'>('medium');
+  const [snowEnabled, setSnowEnabled] = useState(false);
+
+  useEffect(() => {
+    const savedSnow = localStorage.getItem('snowEnabled');
+    const savedDarkMode = localStorage.getItem('darkMode');
+    
+    if (savedSnow === 'true') {
+      setSnowEnabled(true);
+    }
+    
+    if (savedDarkMode === 'true') {
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
 
   const menuItems: MenuItem[] = [
     {
@@ -220,6 +237,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-secondary/30 to-background">
+      {snowEnabled && <SnowEffect />}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -231,6 +249,16 @@ const Index = () => {
           </div>
 
           <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/admin')}
+              className="gap-2"
+            >
+              <Icon name="Settings" size={18} />
+              <span className="hidden sm:inline">Админ</span>
+            </Button>
+
             <Button
               variant="outline"
               className="gap-2"
